@@ -9,6 +9,7 @@ export interface IProduct {
   color: string;
   price: number;
   product_category: number;
+  product_category_name: string;
   promotional_price: number;
 }
 
