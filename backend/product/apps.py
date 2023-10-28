@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PriceTableConfig(AppConfig):
+class ProductConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'price_table'
+    name = 'product'
