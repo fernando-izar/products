@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useListProducts from "../../hooks/useListProducts";
-import { Card, Table, Tooltip, Button, Modal } from "antd";
+import { Card, Table, Tooltip, Button } from "antd";
 import { FaPlus } from "react-icons/fa";
 import { AddProductModal } from "../AddProductModal";
 
