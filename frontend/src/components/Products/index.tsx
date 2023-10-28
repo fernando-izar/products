@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useListProducts from "../../hooks/useListProducts";
+import useListProductCategories from "../../hooks/useListProductCategories";
 import { Card, Table, Tooltip, Button } from "antd";
 import { FaPlus } from "react-icons/fa";
 import { AddProductModal } from "../AddProductModal";
@@ -7,6 +8,8 @@ import { AddProductModal } from "../AddProductModal";
 export const Products = () => {
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const { data, isFetching } = useListProducts("");
+  const { data: productCategories } = useListProductCategories("");
+  console.log("productCategories", productCategories);
   const columns = [
     {
       dataIndex: "name",
