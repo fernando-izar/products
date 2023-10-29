@@ -1,5 +1,3 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
@@ -7,12 +5,15 @@ from rest_framework.generics import (
 
 from product.models import Product
 from product.serializers import ProductSerializer
+from product.filters import ListProductsFilter
+from django_filters import rest_framework as filters
 
 
 class ListCreateProductsView(ListCreateAPIView):
-    serializer_class = ProductSerializer
-    filter_fields = ("name", "price", "category")
     queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ListProductsFilter
 
 
 class RetrieveUpdateDestroyProductView(RetrieveUpdateDestroyAPIView):
