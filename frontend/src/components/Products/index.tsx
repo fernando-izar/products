@@ -1,25 +1,42 @@
 import { useState } from "react";
 import useListProducts from "../../hooks/useListProducts";
-import { Card, Table, Tooltip, Button } from "antd";
-import { FaPlus } from "react-icons/fa";
+import { Card, Table, Tooltip, message } from "antd";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import { AddProductModal } from "../AddProductModal";
 import { IProduct } from "../../hooks/useListProducts";
+import { ConfirmDeleteProductModal } from "../ConfirmDeleteProductModal";
+import api from "../../services/api";
 
 export const Products = () => {
   const [showAddProductModal, setShowAddProductModal] = useState(false);
-  const { data, isFetching } = useListProducts("");
+  const { data, refetch, isFetching } = useListProducts("");
+
+  const handleDelete = async (id: number, name: string) => {
+    const confirmDelete = await ConfirmDeleteProductModal(name);
+    if (confirmDelete) {
+      try {
+        await api.delete(`api/product/${id}/`);
+        message.success("Product deleted successfully");
+      } catch (error) {
+        message.error("Error deleting product");
+      } finally {
+        refetch();
+      }
+    }
+  };
+
   const columns = [
     {
       dataIndex: "name",
       key: "name",
       title: "Name",
+      onFilter: (value: string, record: IProduct) =>
+        record.name.indexOf(value) === 0,
       sorter: (a: IProduct, b: IProduct) => a.name.localeCompare(b.name),
       filters: data?.map((product: IProduct) => ({
         text: product.name,
         value: product.name,
       })),
-      onFilter: (value: string, record: IProduct) =>
-        record.name.indexOf(value) === 0,
     },
     {
       dataIndex: "description",
@@ -38,15 +55,15 @@ export const Products = () => {
       dataIndex: "product_category_name",
       key: "product_category_name",
       title: "Product Type",
+      onFilter: (value: string, record: IProduct) => {
+        return record.product_category_name.indexOf(value) === 0;
+      },
       sorter: (a: IProduct, b: IProduct) =>
         a.product_category_name.localeCompare(b.product_category_name),
       filters: data?.map((product: IProduct) => ({
         text: product.product_category_name,
         value: product.product_category_name,
       })),
-      onFilter: (value: string, record: IProduct) => {
-        return record.product_category_name.indexOf(value) === 0;
-      },
     },
     {
       dataIndex: "price",
@@ -61,6 +78,22 @@ export const Products = () => {
       sorter: (a: IProduct, b: IProduct) =>
         a.promotional_price - b.promotional_price,
     },
+    {
+      title: "Action",
+      dataIndex: "operation",
+      render: (_: unknown, record: IProduct) => {
+        const { id, name } = record;
+        return (
+          <Tooltip title="Delete Product">
+            <FaTrash
+              size={12}
+              onClick={() => handleDelete(id, name)}
+              style={{ cursor: "pointer" }}
+            ></FaTrash>
+          </Tooltip>
+        );
+      },
+    },
   ];
   return (
     <Card
@@ -71,15 +104,19 @@ export const Products = () => {
           <FaPlus
             style={{ cursor: "pointer" }}
             onClick={() => setShowAddProductModal(true)}
-          >
-            // <Button onClick={() => setShowAddProductModal(true)} />
-          </FaPlus>
+          ></FaPlus>
         </Tooltip>
       }
     >
-      <Table columns={columns} dataSource={data} loading={isFetching} />
+      {
+        //@ts-ignore
+        <Table columns={columns} dataSource={data} loading={isFetching} />
+      }
       {showAddProductModal && (
-        <AddProductModal setShowAddProductModal={setShowAddProductModal} />
+        <AddProductModal
+          setShowAddProductModal={setShowAddProductModal}
+          refetch={refetch}
+        />
       )}
     </Card>
   );

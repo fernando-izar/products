@@ -7,6 +7,7 @@ import api from "../../services/api";
 
 type AddProductModalProps = {
   setShowAddProductModal: (show: boolean) => void;
+  refetch: () => void;
 };
 
 type ProductFormValues = {
@@ -27,18 +28,9 @@ const initialValues: ProductFormValues = {
 
 export const AddProductModal: React.FC<AddProductModalProps> = ({
   setShowAddProductModal,
+  refetch,
 }) => {
   const { data } = useListProductCategories("");
-  async function handleSubmit(values: ProductFormValues) {
-    try {
-      await api.post("api/products/", values);
-      message.success("Product created successfully");
-    } catch (error) {
-      message.error("Error creating product");
-    } finally {
-      setShowAddProductModal(false);
-    }
-  }
 
   const productSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
@@ -50,10 +42,22 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
       .min(0.01, "Must be greater than 0.01"),
   });
 
+  async function handleSubmit(values: ProductFormValues) {
+    try {
+      await api.post("api/products/", values);
+      message.success("Product created successfully");
+    } catch (error) {
+      message.error("Error creating product");
+    } finally {
+      setShowAddProductModal(false);
+      refetch();
+    }
+  }
+
   return (
     <Modal
       open={true}
-      title="Add Product"
+      title="Add New Product"
       onCancel={() => {
         setShowAddProductModal(false);
       }}
