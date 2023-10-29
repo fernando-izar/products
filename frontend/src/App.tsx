@@ -7,7 +7,7 @@ function App() {
   return (
     <Layout className="app-layout">
       <Header className="app-header">
-        <Content className="app-header-content">Header</Content>
+        <Content className="app-header-content">React-test</Content>
       </Header>
       <Layout>
         <Content className="content-layout">
@@ -15,7 +15,9 @@ function App() {
         </Content>
       </Layout>
       <Footer className="app-footer">
-        <Content className="app-footer-content">Footer</Content>
+        <Content className="app-footer-content">
+          by Fernando Cristante Izar
+        </Content>
       </Footer>
     </Layout>
   );
