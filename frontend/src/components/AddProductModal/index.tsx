@@ -1,25 +1,54 @@
 import React from "react";
-import { Modal, Row, Col, Input, Select } from "antd";
-import { Formik } from "formik";
+import useListProductCategories from "../../hooks/useListProductCategories";
+import { Modal, Row, Col, Input, Select, message } from "antd";
+import { Formik, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import api from "../../services/api";
 
 type AddProductModalProps = {
   setShowAddProductModal: (show: boolean) => void;
 };
 
-const initialValues = {
+type ProductFormValues = {
+  name: string;
+  description: string;
+  color: string;
+  product_category: number | null;
+  price: number;
+};
+
+const initialValues: ProductFormValues = {
   name: "",
   description: "",
   color: "",
-  product_category: "",
+  product_category: null,
   price: 0,
 };
 
 export const AddProductModal: React.FC<AddProductModalProps> = ({
   setShowAddProductModal,
 }) => {
-  function handleSubmit(values) {
-    console.log(values);
+  const { data } = useListProductCategories("");
+  async function handleSubmit(values: ProductFormValues) {
+    try {
+      await api.post("/products/", values);
+      message.success("Product created successfully");
+    } catch (error) {
+      message.error("Error creating product");
+    } finally {
+      setShowAddProductModal(false);
+    }
   }
+
+  const productSchema = Yup.object().shape({
+    name: Yup.string().required("Required"),
+    description: Yup.string().required("Required"),
+    color: Yup.string().required("Required"),
+    product_category: Yup.string().required("Required"),
+    price: Yup.number()
+      .required("Required")
+      .min(0.01, "Must be greater than 0.01"),
+  });
 
   return (
     <Modal
@@ -31,8 +60,18 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
       cancelButtonProps={{ style: { display: "none" } }}
       okButtonProps={{ style: { display: "none" } }}
     >
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {({ values, handleSubmit, handleChange, isSubmitting }) => {
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={productSchema}
+      >
+        {({
+          values,
+          handleSubmit,
+          handleChange,
+          isSubmitting,
+          setFieldValue,
+        }) => {
           return (
             <form onSubmit={handleSubmit}>
               <Row gutter={[16, 16]}>
@@ -45,6 +84,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                     onChange={handleChange}
                   />
                 </Col>
+                <ErrorMessage name="name" />
                 <Col span={24}>
                   <Input
                     type="text"
@@ -53,6 +93,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                     name="description"
                     onChange={handleChange}
                   />
+                  <ErrorMessage name="description" />
                 </Col>
                 <Col span={24}>
                   <Input
@@ -62,9 +103,22 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                     name="color"
                     onChange={handleChange}
                   />
+                  <ErrorMessage name="color" />
                 </Col>
                 <Col span={24}>
-                  <Select />
+                  <Select
+                    placeholder="Product Type"
+                    onChange={(value) =>
+                      setFieldValue("product_category", value)
+                    }
+                    value={values.product_category}
+                    style={{ width: "100%" }}
+                    options={data?.map((category) => ({
+                      label: category.name,
+                      value: category.id,
+                    }))}
+                  />
+                  <ErrorMessage name="product_category" />
                 </Col>
                 <Col span={24}>
                   <Input
@@ -76,6 +130,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                     min={0}
                     step={0.01}
                   />
+                  <ErrorMessage name="price" />
                 </Col>
                 <Col span={24}>
                   <button type="submit" disabled={isSubmitting}>
