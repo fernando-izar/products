@@ -13,9 +13,9 @@ export interface IProduct {
   promotional_price: number;
 }
 
-const getListProducts = async (): Promise<IProduct[]> => {
+const getListProducts = async (query: string): Promise<IProduct[]> => {
   try {
-    const { data } = await api.get("/api/products");
+    const { data } = await api.get(`/api/products${query}`);
     return data;
   } catch (error) {
     notification.error({ message: "Erro ao buscar produtos" });
@@ -24,7 +24,7 @@ const getListProducts = async (): Promise<IProduct[]> => {
 };
 
 export default function useListProducts(
-  query?: string
+  query = ""
 ): UseQueryResult<IProduct[]> {
-  return useQuery(["products", query], getListProducts);
+  return useQuery(["products", query], () => getListProducts(query));
 }
