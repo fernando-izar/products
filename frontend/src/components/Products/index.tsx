@@ -3,6 +3,7 @@ import useListProducts from "../../hooks/useListProducts";
 import { Card, Table, Tooltip, Button } from "antd";
 import { FaPlus } from "react-icons/fa";
 import { AddProductModal } from "../AddProductModal";
+import { IProduct } from "../../hooks/useListProducts";
 
 export const Products = () => {
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -12,37 +13,53 @@ export const Products = () => {
       dataIndex: "name",
       key: "name",
       title: "Name",
-      sorter: true,
+      sorter: (a: IProduct, b: IProduct) => a.name.localeCompare(b.name),
+      filters: data?.map((product: IProduct) => ({
+        text: product.name,
+        value: product.name,
+      })),
+      onFilter: (value: string, record: IProduct) =>
+        record.name.indexOf(value) === 0,
     },
     {
       dataIndex: "description",
       key: "description",
       title: "Description",
-      sorter: true,
+      sorter: (a: IProduct, b: IProduct) =>
+        a.description.localeCompare(b.description),
     },
     {
       dataIndex: "color",
       key: "color",
       title: "Color",
-      sorter: true,
+      sorter: (a: IProduct, b: IProduct) => a.color.localeCompare(b.color),
     },
     {
       dataIndex: "product_category_name",
       key: "product_category_name",
       title: "Product Type",
-      sorter: true,
+      sorter: (a: IProduct, b: IProduct) =>
+        a.product_category_name.localeCompare(b.product_category_name),
+      filters: data?.map((product: IProduct) => ({
+        text: product.product_category_name,
+        value: product.product_category_name,
+      })),
+      onFilter: (value: string, record: IProduct) => {
+        return record.product_category_name.indexOf(value) === 0;
+      },
     },
     {
       dataIndex: "price",
       key: "price",
       title: "Price",
-      sorter: true,
+      sorter: (a: IProduct, b: IProduct) => a.price - b.price,
     },
     {
       dataIndex: "promotional_price",
       key: "promotional_price",
       title: "Promotional Price",
-      sorter: true,
+      sorter: (a: IProduct, b: IProduct) =>
+        a.promotional_price - b.promotional_price,
     },
   ];
   return (
