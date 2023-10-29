@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useListProducts from "../../hooks/useListProducts";
-import { Card, Table, Tooltip, message } from "antd";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { Card, Table, Tooltip, message, Space } from "antd";
+import { FaPlus, FaTrash, FaFilter } from "react-icons/fa";
 import { AddProductModal } from "../AddProductModal";
+import { FilterProductModal } from "../FilterProductModal";
 import { IProduct } from "../../hooks/useListProducts";
 import { ConfirmDeleteProductModal } from "../ConfirmDeleteProductModal";
 import api from "../../services/api";
 
 export const Products = () => {
+  const [query, setQuery] = useState("");
   const [showAddProductModal, setShowAddProductModal] = useState(false);
-  const { data, refetch, isFetching } = useListProducts("");
+  const [showFilterProductModal, setShowFilterProductModal] = useState(false);
+  const { data, refetch, isFetching } = useListProducts(query);
+
+  const onSearch = (value: string) => {
+    setQuery(`?name__icontains=${value}`);
+    setShowFilterProductModal(false);
+  };
 
   const handleDelete = async (id: number, name: string) => {
     const confirmDelete = await ConfirmDeleteProductModal(name);
@@ -95,17 +103,30 @@ export const Products = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    refetch();
+  }, [query]);
+
   return (
     <Card
       type="inner"
       title="Products List"
       extra={
-        <Tooltip title="Add Product">
-          <FaPlus
-            style={{ cursor: "pointer" }}
-            onClick={() => setShowAddProductModal(true)}
-          ></FaPlus>
-        </Tooltip>
+        <Space size={"large"}>
+          <Tooltip title="Filter">
+            <FaFilter
+              style={{ cursor: "pointer", marginLeft: 8 }}
+              onClick={() => setShowFilterProductModal(true)}
+            />
+          </Tooltip>
+          <Tooltip title="Add Product">
+            <FaPlus
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowAddProductModal(true)}
+            />
+          </Tooltip>
+        </Space>
       }
     >
       {
@@ -116,6 +137,13 @@ export const Products = () => {
         <AddProductModal
           setShowAddProductModal={setShowAddProductModal}
           refetch={refetch}
+        />
+      )}
+      {showFilterProductModal && (
+        <FilterProductModal
+          setShowFilterProductModal={setShowFilterProductModal}
+          onSearch={onSearch}
+          setQuery={setQuery}
         />
       )}
     </Card>
