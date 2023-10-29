@@ -31,7 +31,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
   const { data } = useListProductCategories("");
   async function handleSubmit(values: ProductFormValues) {
     try {
-      await api.post("/products/", values);
+      await api.post("api/products/", values);
       message.success("Product created successfully");
     } catch (error) {
       message.error("Error creating product");
@@ -52,7 +52,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
 
   return (
     <Modal
-      visible={true}
+      open={true}
       title="Add Product"
       onCancel={() => {
         setShowAddProductModal(false);
