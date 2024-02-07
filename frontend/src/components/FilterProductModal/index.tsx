@@ -1,20 +1,27 @@
 import React from "react";
 import { Modal, Input } from "antd";
 
+const { Search } = Input;
+
 type FilterProductModalProps = {
   setShowFilterProductModal: (show: boolean) => void;
   onSearch: (value: string) => void;
   setQuery: (query: string) => void;
+  setSearchedValue: React.Dispatch<React.SetStateAction<string>>;
+  searchedValue: string;
 };
 
 export const FilterProductModal: React.FC<FilterProductModalProps> = ({
   setShowFilterProductModal,
   onSearch,
   setQuery,
+  setSearchedValue,
+  searchedValue,
 }) => {
   const handleOK = () => {
     setQuery("");
     setShowFilterProductModal(false);
+    setSearchedValue("");
   };
 
   return (
@@ -26,7 +33,12 @@ export const FilterProductModal: React.FC<FilterProductModalProps> = ({
       onOk={handleOK}
       okText="Reset"
     >
-      <Input.Search placeholder="Search by name" onSearch={onSearch} />
+      <Search
+        placeholder="Search"
+        value={searchedValue}
+        onSearch={onSearch}
+        onChange={(e) => setSearchedValue(e.target.value)}
+      />
     </Modal>
   );
 };
