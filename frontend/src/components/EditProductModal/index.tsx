@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import useListProductCategories from "../../hooks/useListProductCategories";
 import { Modal, Row, Col, Input, Select, message } from "antd";
 import { Formik, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import api from "../../services/api";
+import useListProduct from "../../hooks/useListProduct";
 
-type AddProductModalProps = {
+type EditProductModalProps = {
   setShowAddProductModal: (show: boolean) => void;
   refetch: () => void;
+  id: number;
 };
 
 type ProductFormValues = {
@@ -18,19 +20,21 @@ type ProductFormValues = {
   price: number | undefined;
 };
 
-export const AddProductModal: React.FC<AddProductModalProps> = ({
+export const EditProductModal: React.FC<EditProductModalProps> = ({
   setShowAddProductModal,
   refetch,
+  id,
 }) => {
   const { data } = useListProductCategories("");
+  const { data: product, isLoading } = useListProduct(id);
 
-  const initialValues: ProductFormValues = {
+  const [initialValues, setInitialValues] = useState<ProductFormValues>({
     name: "",
     description: "",
     color: "",
     product_category: null,
     price: undefined,
-  };
+  });
 
   const productSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
@@ -44,8 +48,8 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
 
   async function handleSubmit(values: ProductFormValues) {
     try {
-      await api.post("api/products/", values);
-      message.success("Product created successfully");
+      await api.put(`api/product/${id}/`, values);
+      message.success("Product updated successfully");
     } catch (error) {
       message.error("Error creating product");
     } finally {
@@ -54,10 +58,22 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
     }
   }
 
+  useEffect(() => {
+    if (product && !isLoading) {
+      setInitialValues({
+        name: product.name || "",
+        description: product.description || "",
+        color: product.color || "",
+        product_category: product.product_category || null,
+        price: product.price || undefined,
+      });
+    }
+  }, [product, isLoading]);
+
   return (
     <Modal
       open={true}
-      title="Add New Product"
+      title="Edit Product"
       onCancel={() => {
         setShowAddProductModal(false);
       }}
@@ -68,6 +84,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={productSchema}
+        enableReinitialize
       >
         {({
           values,

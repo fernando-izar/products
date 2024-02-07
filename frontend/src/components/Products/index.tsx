@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useListProducts from "../../hooks/useListProducts";
 import { Card, Table, Tooltip, message, Space } from "antd";
-import { FaPlus, FaTrash, FaFilter } from "react-icons/fa";
+import { FaPlus, FaTrash, FaFilter, FaEdit } from "react-icons/fa";
 import { AddProductModal } from "../AddProductModal";
+import { EditProductModal } from "../EditProductModal";
 import { FilterProductModal } from "../FilterProductModal";
 import { IProduct } from "../../hooks/useListProducts";
 import { ConfirmDeleteProductModal } from "../ConfirmDeleteProductModal";
@@ -12,10 +13,13 @@ export const Products = () => {
   const [query, setQuery] = useState("");
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showFilterProductModal, setShowFilterProductModal] = useState(false);
+  const [showEditProductModal, setShowEditProductModal] = useState(false);
+  const [editedProductId, setEditedProductId] = useState<number>(0);
+  const [searchedValue, setSearchedValue] = useState("");
   const { data, refetch, isFetching } = useListProducts(query);
 
   const onSearch = (value: string) => {
-    setQuery(`?name__icontains=${value}`);
+    setQuery(`?search=${value}`);
     setShowFilterProductModal(false);
   };
 
@@ -78,6 +82,12 @@ export const Products = () => {
       key: "price",
       title: "Price",
       sorter: (a: IProduct, b: IProduct) => a.price - b.price,
+      render: (price: number) => {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(price);
+      },
     },
     {
       dataIndex: "promotional_price",
@@ -85,28 +95,51 @@ export const Products = () => {
       title: "Promotional Price",
       sorter: (a: IProduct, b: IProduct) =>
         a.promotional_price - b.promotional_price,
+      render: (promotional_price: number) => {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(promotional_price);
+      },
     },
     {
-      title: "Action",
       dataIndex: "operation",
       render: (_: unknown, record: IProduct) => {
         const { id, name } = record;
         return (
-          <Tooltip title="Delete Product">
-            <FaTrash
-              size={12}
-              onClick={() => handleDelete(id, name)}
-              style={{ cursor: "pointer" }}
-            ></FaTrash>
-          </Tooltip>
+          <React.Fragment>
+            <Tooltip title="Delete Product">
+              <FaTrash
+                size={12}
+                onClick={() => handleDelete(id, name)}
+                style={{ cursor: "pointer" }}
+              ></FaTrash>
+            </Tooltip>
+            <Tooltip title="Edit Product">
+              <FaEdit
+                size={12}
+                style={{ cursor: "pointer", marginLeft: 8 }}
+                onClick={() => setEditedProductId(id)}
+              ></FaEdit>
+            </Tooltip>
+          </React.Fragment>
         );
       },
     },
   ];
 
   useEffect(() => {
-    refetch();
-  }, [query]);
+    if (editedProductId) {
+      setShowEditProductModal(true);
+    }
+  }, [editedProductId]);
+
+  useEffect(() => {
+    if (!showEditProductModal) {
+      setEditedProductId(0);
+      refetch();
+    }
+  }, [showEditProductModal, showAddProductModal]);
 
   return (
     <Card
@@ -130,8 +163,13 @@ export const Products = () => {
       }
     >
       {
-        //@ts-ignore
-        <Table columns={columns} dataSource={data} loading={isFetching} />
+        <Table
+          // @ts-ignore
+          columns={columns}
+          dataSource={data}
+          loading={isFetching}
+          pagination={{ pageSize: 5 }}
+        />
       }
       {showAddProductModal && (
         <AddProductModal
@@ -139,11 +177,20 @@ export const Products = () => {
           refetch={refetch}
         />
       )}
+      {showEditProductModal && (
+        <EditProductModal
+          setShowAddProductModal={setShowEditProductModal}
+          refetch={refetch}
+          id={editedProductId}
+        />
+      )}
       {showFilterProductModal && (
         <FilterProductModal
           setShowFilterProductModal={setShowFilterProductModal}
           onSearch={onSearch}
           setQuery={setQuery}
+          setSearchedValue={setSearchedValue}
+          searchedValue={searchedValue}
         />
       )}
     </Card>
