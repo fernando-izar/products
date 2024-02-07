@@ -15,10 +15,11 @@ export const Products = () => {
   const [showFilterProductModal, setShowFilterProductModal] = useState(false);
   const [showEditProductModal, setShowEditProductModal] = useState(false);
   const [editedProductId, setEditedProductId] = useState<number>(0);
+  const [searchedValue, setSearchedValue] = useState("");
   const { data, refetch, isFetching } = useListProducts(query);
 
   const onSearch = (value: string) => {
-    setQuery(`?name__icontains=${value}`);
+    setQuery(`?search=${value}`);
     setShowFilterProductModal(false);
   };
 
@@ -81,6 +82,12 @@ export const Products = () => {
       key: "price",
       title: "Price",
       sorter: (a: IProduct, b: IProduct) => a.price - b.price,
+      render: (price: number) => {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(price);
+      },
     },
     {
       dataIndex: "promotional_price",
@@ -88,9 +95,14 @@ export const Products = () => {
       title: "Promotional Price",
       sorter: (a: IProduct, b: IProduct) =>
         a.promotional_price - b.promotional_price,
+      render: (promotional_price: number) => {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(promotional_price);
+      },
     },
     {
-      title: "Action",
       dataIndex: "operation",
       render: (_: unknown, record: IProduct) => {
         const { id, name } = record;
@@ -103,7 +115,7 @@ export const Products = () => {
                 style={{ cursor: "pointer" }}
               ></FaTrash>
             </Tooltip>
-            <Tooltip>
+            <Tooltip title="Edit Product">
               <FaEdit
                 size={12}
                 style={{ cursor: "pointer", marginLeft: 8 }}
@@ -115,10 +127,6 @@ export const Products = () => {
       },
     },
   ];
-
-  useEffect(() => {
-    refetch();
-  }, [query]);
 
   useEffect(() => {
     if (editedProductId) {
@@ -155,8 +163,13 @@ export const Products = () => {
       }
     >
       {
-        //@ts-ignore
-        <Table columns={columns} dataSource={data} loading={isFetching} />
+        <Table
+          // @ts-ignore
+          columns={columns}
+          dataSource={data}
+          loading={isFetching}
+          pagination={{ pageSize: 5 }}
+        />
       }
       {showAddProductModal && (
         <AddProductModal
@@ -164,18 +177,20 @@ export const Products = () => {
           refetch={refetch}
         />
       )}
-      {showFilterProductModal && (
-        <FilterProductModal
-          setShowFilterProductModal={setShowFilterProductModal}
-          onSearch={onSearch}
-          setQuery={setQuery}
-        />
-      )}
       {showEditProductModal && (
         <EditProductModal
           setShowAddProductModal={setShowEditProductModal}
           refetch={refetch}
           id={editedProductId}
+        />
+      )}
+      {showFilterProductModal && (
+        <FilterProductModal
+          setShowFilterProductModal={setShowFilterProductModal}
+          onSearch={onSearch}
+          setQuery={setQuery}
+          setSearchedValue={setSearchedValue}
+          searchedValue={searchedValue}
         />
       )}
     </Card>
