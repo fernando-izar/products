@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useListProducts from "../../hooks/useListProducts";
 import { Card, Table, Tooltip, message, Space } from "antd";
-import { FaPlus, FaTrash, FaFilter } from "react-icons/fa";
+import { FaPlus, FaTrash, FaFilter, FaEdit } from "react-icons/fa";
 import { AddProductModal } from "../AddProductModal";
+import { EditProductModal } from "../EditProductModal";
 import { FilterProductModal } from "../FilterProductModal";
 import { IProduct } from "../../hooks/useListProducts";
 import { ConfirmDeleteProductModal } from "../ConfirmDeleteProductModal";
@@ -12,6 +13,8 @@ export const Products = () => {
   const [query, setQuery] = useState("");
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showFilterProductModal, setShowFilterProductModal] = useState(false);
+  const [showEditProductModal, setShowEditProductModal] = useState(false);
+  const [editedProductId, setEditedProductId] = useState<number>(0);
   const { data, refetch, isFetching } = useListProducts(query);
 
   const onSearch = (value: string) => {
@@ -92,13 +95,22 @@ export const Products = () => {
       render: (_: unknown, record: IProduct) => {
         const { id, name } = record;
         return (
-          <Tooltip title="Delete Product">
-            <FaTrash
-              size={12}
-              onClick={() => handleDelete(id, name)}
-              style={{ cursor: "pointer" }}
-            ></FaTrash>
-          </Tooltip>
+          <React.Fragment>
+            <Tooltip title="Delete Product">
+              <FaTrash
+                size={12}
+                onClick={() => handleDelete(id, name)}
+                style={{ cursor: "pointer" }}
+              ></FaTrash>
+            </Tooltip>
+            <Tooltip>
+              <FaEdit
+                size={12}
+                style={{ cursor: "pointer", marginLeft: 8 }}
+                onClick={() => setEditedProductId(id)}
+              ></FaEdit>
+            </Tooltip>
+          </React.Fragment>
         );
       },
     },
@@ -107,6 +119,19 @@ export const Products = () => {
   useEffect(() => {
     refetch();
   }, [query]);
+
+  useEffect(() => {
+    if (editedProductId) {
+      setShowEditProductModal(true);
+    }
+  }, [editedProductId]);
+
+  useEffect(() => {
+    if (!showEditProductModal) {
+      setEditedProductId(0);
+      refetch();
+    }
+  }, [showEditProductModal, showAddProductModal]);
 
   return (
     <Card
@@ -144,6 +169,13 @@ export const Products = () => {
           setShowFilterProductModal={setShowFilterProductModal}
           onSearch={onSearch}
           setQuery={setQuery}
+        />
+      )}
+      {showEditProductModal && (
+        <EditProductModal
+          setShowAddProductModal={setShowEditProductModal}
+          refetch={refetch}
+          id={editedProductId}
         />
       )}
     </Card>
