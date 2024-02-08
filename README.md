@@ -9,7 +9,7 @@ CRUD operations for a product price table. Frontend built with React + TypeScrip
 ### Docker Option
 
 - Install Docker on your machine.
-- Create your `.env` file and populate it with information from `.env.example`.
+- Create your `.env` file and populate it with information from `/backend/.env.example`.
 - From the application root, run `docker-compose up`.
 - Access the application at `localhost:5173` in your browser.
 
