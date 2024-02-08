@@ -23,6 +23,7 @@ CRUD operations for a product price table. Frontend built with React + TypeScrip
 - Create your database by executing the appropriate command for your database management system (e.g., for PostgreSQL: `CREATE DATABASE your_database_name;`).
 - Create your `.env` file and populate it with information from `.env.example`.
 - Run migrations with `python manage.py migrate`.
+- **Create a superuser by running `python manage.py createsuperuser` and follow the prompts to set up a user admin.**
 - Start the application with `python manage.py runserver`.
 
 #### Frontend

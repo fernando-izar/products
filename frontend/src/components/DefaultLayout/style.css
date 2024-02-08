@@ -1,0 +1,67 @@
+.app-layout {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  background-color: #282c34;
+  color: white;
+}
+
+.app-header-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row-reverse;
+  margin: 0 5rem;
+}
+
+.content-layout {
+  margin: 0 1rem;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  width: 100%;
+}
+
+app-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: #282c34;
+  color: #d1cdcd;
+}
+
+app-footer-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 50rem;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
+}
+
+.sign-out-icon {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.sign-out-icon:hover {
+  transform: scale(1.3);
+}
