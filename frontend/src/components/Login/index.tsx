@@ -23,7 +23,6 @@ export const Login: React.FC = () => {
 
   const handleSubmit = async (values: SignInRequestData) => {
     try {
-      console.log("values", values);
       await signIn(values);
       setIsAuthenticated(true);
       navigate("/products");

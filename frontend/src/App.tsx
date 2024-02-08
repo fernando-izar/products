@@ -5,13 +5,13 @@ import { AuthProvider } from "./components/AuthProvider";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <DefaultLayout>
           <AppRoutes />
         </DefaultLayout>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

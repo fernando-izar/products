@@ -18,7 +18,6 @@ export async function signInRequest({
       email,
       password,
     });
-    console.log("data", data);
     const { access, refresh } = data;
     return { access, refresh };
   } catch (error) {
