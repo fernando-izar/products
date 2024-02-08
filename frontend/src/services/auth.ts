@@ -1,6 +1,5 @@
 import api from "../services/api";
 import { SignInRequestData } from "../components/AuthProvider";
-import { message } from "antd";
 
 type SignInRequestResponse = {
   access: string;
