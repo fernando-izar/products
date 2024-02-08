@@ -1,11 +1,13 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { ProductsList } from "./components/ProductsList";
+import { Products } from "./components/Products";
+import { Login } from "./components/Login";
 
 export const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/products" element={<ProductsList />} />
-      <Route path="*" element={<Navigate to="/products" />} />
+      <Route path="/products" element={<Products />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 };

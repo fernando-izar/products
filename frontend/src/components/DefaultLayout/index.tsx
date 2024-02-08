@@ -1,18 +1,19 @@
 import { Layout } from "antd";
 import { Header, Footer, Content } from "antd/lib/layout/layout";
-import { Products } from "../Products";
 import "./style.css";
 
-export const ProductsList = () => {
+interface DefaultLayoutProps {
+  children: React.ReactNode;
+}
+
+export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   return (
     <Layout className="app-layout">
       <Header className="app-header">
-        <Content className="app-header-content">React-test</Content>
+        <Content className="app-header-content">Products App</Content>
       </Header>
       <Layout>
-        <Content className="content-layout">
-          <Products />
-        </Content>
+        <Content className="content-layout">{children}</Content>
       </Layout>
       <Footer className="app-footer">
         <Content className="app-footer-content">

@@ -50,3 +50,9 @@ app-footer-content {
   align-items: center;
   margin: 0 50rem;
 }
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
+}
