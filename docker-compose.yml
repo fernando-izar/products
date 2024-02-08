@@ -14,7 +14,12 @@ services:
       retries: 5
   migrations:
     build: ./backend
-    command: sh -c 'dockerize -wait tcp://db:5432 -timeout 60s && python manage.py migrate'
+    env_file:
+      - ./backend/.env
+    command: >
+      sh -c 'dockerize -wait tcp://db:5432 -timeout 60s &&
+            python manage.py migrate &&
+            echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(\"$$ADMIN_USERNAME\", \"$$ADMIN_EMAIL\", \"$$ADMIN_PASSWORD\") if not User.objects.filter(username=\"$$ADMIN_USERNAME\").exists() else 0" | python manage.py shell'
     volumes:
       - ./backend:/app
     depends_on:
