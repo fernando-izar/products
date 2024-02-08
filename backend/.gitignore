@@ -126,3 +126,6 @@ GitHub.sublime-settings
 /staticfiles/
 /documents/
 # /apps/legacy/
+
+
+.DS_Store
