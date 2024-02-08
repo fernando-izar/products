@@ -1,11 +1,16 @@
 import { BrowserRouter } from "react-router-dom";
 import { AppRoutes } from "./routes";
-// import "./App.css";
+import { DefaultLayout } from "./components/DefaultLayout";
+import { AuthProvider } from "./components/AuthProvider";
 
 function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <AuthProvider>
+        <DefaultLayout>
+          <AppRoutes />
+        </DefaultLayout>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

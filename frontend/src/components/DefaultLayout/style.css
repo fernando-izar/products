@@ -50,3 +50,18 @@ app-footer-content {
   align-items: center;
   margin: 0 50rem;
 }
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
+}
+
+.sign-out-icon {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.sign-out-icon:hover {
+  transform: scale(1.3);
+}
