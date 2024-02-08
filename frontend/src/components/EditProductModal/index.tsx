@@ -105,7 +105,11 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                     onChange={handleChange}
                   />
                 </Col>
-                <ErrorMessage name="name" />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="error-message"
+                />
                 <Col span={24}>
                   <Input
                     type="text"
@@ -114,7 +118,11 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                     name="description"
                     onChange={handleChange}
                   />
-                  <ErrorMessage name="description" />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="error-message"
+                  />
                 </Col>
                 <Col span={24}>
                   <Input
@@ -124,7 +132,11 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                     name="color"
                     onChange={handleChange}
                   />
-                  <ErrorMessage name="color" />
+                  <ErrorMessage
+                    name="color"
+                    component="div"
+                    className="error-message"
+                  />
                 </Col>
                 <Col span={24}>
                   <Select
@@ -139,7 +151,11 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                       value: category.id,
                     }))}
                   />
-                  <ErrorMessage name="product_category" />
+                  <ErrorMessage
+                    name="product_category"
+                    component="div"
+                    className="error-message"
+                  />
                 </Col>
                 <Col span={24}>
                   <Input
@@ -151,7 +167,11 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
                     min={0}
                     step={0.01}
                   />
-                  <ErrorMessage name="price" />
+                  <ErrorMessage
+                    name="price"
+                    component="div"
+                    className="error-message"
+                  />
                 </Col>
                 <Col span={24}>
                   <button type="submit" disabled={isSubmitting}>
