@@ -19,14 +19,14 @@ services:
     command: >
       sh -c 'dockerize -wait tcp://db:5432 -timeout 60s &&
             python manage.py migrate &&
-            echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(\"$$ADMIN_USERNAME\", \"$$ADMIN_EMAIL\", \"$$ADMIN_PASSWORD\") if not User.objects.filter(username=\"$$ADMIN_USERNAME\").exists() else 0" | python manage.py shell'
+            echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(\"$$ADMIN_USERNAME\", \"$$ADMIN_EMAIL\", \"$$ADMIN_PASSWORD\") if not User.objects.filter(username=\"$$ADMIN_USERNAME\").exists() else 0" | python manage.py shell && touch /app/migrations_done'
     volumes:
       - ./backend:/app
     depends_on:
       - db
   backend:
     build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c 'dockerize -wait file:///app/migrations_done -timeout 60s && rm /app/migrations_done && python manage.py runserver 0.0.0.0:8000'
     volumes:
       - ./backend:/app
     ports:
