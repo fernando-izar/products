@@ -8,13 +8,11 @@ type SignInRequestResponse = {
 
 export async function signInRequest({
   username,
-  email,
   password,
 }: SignInRequestData): Promise<SignInRequestResponse | undefined> {
   try {
     const { data } = await api.post("/api/token/", {
       username,
-      email,
       password,
     });
     const { access, refresh } = data;
