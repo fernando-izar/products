@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 const InitialValues = {
   username: "",
-  email: "",
   password: "",
 };
 
@@ -18,7 +17,6 @@ export const Login: React.FC = () => {
 
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required("Required"),
-    email: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
   });
 
@@ -56,23 +54,6 @@ export const Login: React.FC = () => {
                   />
                   <ErrorMessage
                     name="username"
-                    component="div"
-                    className="error-message"
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Email"
-                  />
-                  <ErrorMessage
-                    name="email"
                     component="div"
                     className="error-message"
                   />
