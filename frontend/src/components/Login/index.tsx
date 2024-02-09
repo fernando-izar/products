@@ -17,6 +17,7 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const LoginSchema = Yup.object().shape({
+    username: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
   });
