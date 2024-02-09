@@ -10,7 +10,7 @@ def create_initial_categories(apps, schema_editor):
         {"name": "Furniture", "discount": 3},
         {"name": "Electronics", "discount": 4.3},
         {"name": "Appliances", "discount": 5},
-        {"name": "Regrigerators", "discount": 7.5},
+        {"name": "Refrigerators", "discount": 7.5},
     ]
 
     for category_info in categories_data:
