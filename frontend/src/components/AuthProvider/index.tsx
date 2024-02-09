@@ -9,7 +9,6 @@ type AuthProviderProps = {
 
 export type SignInRequestData = {
   username: string;
-  email: string;
   password: string;
 };
 
@@ -28,12 +27,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   async function signIn({
     username,
-    email,
     password,
   }: SignInRequestData): Promise<void> {
     const response = await signInRequest({
       username,
-      email,
       password,
     });
     if (!response) {

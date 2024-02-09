@@ -7,9 +7,6 @@ from product_category.models import ProductCategory
 from django.contrib.auth.models import User
 import logging
 
-# Configurando o logger
-logger = logging.getLogger(__name__)
-
 class ProductTests(TestCase):
     def setUp(self):
         # Configurando o cliente de teste
